@@ -1,9 +1,7 @@
 <script>
 	import Header from './Header.svelte';
-	import { onMount } from 'svelte'
-    onMount(() => {
-        import('../../node_modules/uikit/dist/css/uikit.unfold.min.css');
-    })
+	import { onMount } from 'svelte';
+    import '../../node_modules/uikit/dist/css/uikit.unfold.min.css';
 </script>
 <div class="app">
     <Header />
