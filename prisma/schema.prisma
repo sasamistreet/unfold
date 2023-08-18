@@ -29,7 +29,7 @@ model Work {
 }
 
 model Step {
-  id                 String     @id @default(uuid())
+  id                 String     @id @db.Uuid
   work               Work       @relation(fields: [workId], references: [id])
   workId             Int
   order              Int
