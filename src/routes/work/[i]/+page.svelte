@@ -6,19 +6,11 @@
 	UIkit.grid();
 	UIkit.accordion();
 
-	//load strapi
-	export const load = async({params, fetch}) => {
-		const res = await fetch(`http://localhost:1337/api/work/${params.id}`)
-		if (res.status == 404){
-			const error = new Error(`${id}は見つかりませんでした`);
-			return {status:404, error};
-		} else {
-			const response = await res.json;
-			return { props: {post: response.data.attributes}};
-		}
-	};
+	export let data;
+
 </script>
 <Dviewer></Dviewer>
+
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
@@ -38,7 +30,7 @@
 				</figure>
             </div>
             <div>
-				<h1 class="uk-margin-small">{name}</h1>
+				<h1 class="uk-margin-small">{data.title}</h1>
                 <div><span class="author">by author</span></div>
 				<div><span class="uk-badge uk-background-secondary">complex</span></div>
 				<span uk-icon="icon: star"></span><span uk-icon="icon: star"></span><span uk-icon="icon: star"></span>
