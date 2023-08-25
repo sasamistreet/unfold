@@ -7,6 +7,7 @@
 	UIkit.accordion();
 
 	export let data;
+	$: ({ work, steps, featured } = data);
 
 </script>
 <Dviewer></Dviewer>
@@ -16,21 +17,11 @@
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
             <div>
                 <figure>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 105">
-						<g fill="#cccccc" stroke="#cccccc" stroke-linejoin="round" stroke-linecap="round">
-						  <path d="M14,40v24M81,40v24M38,68v24M57,68v24M28,42v31h39v-31z" stroke-width="12"/>
-						  <path d="M32,5l5,10M64,5l-6,10 " stroke-width="2"/>
-						</g>
-						<path d="M22,35h51v10h-51zM22,33c0-31,51-31,51,0" fill="#cccccc"/>
-						<g fill="#FFF">
-						  <circle cx="36" cy="22" r="2"/>
-						  <circle cx="59" cy="22" r="2"/>
-						</g>
-					  </svg>
+					<img src="{featured.publicUrl}" alt="" >
 				</figure>
             </div>
             <div>
-				<h1 class="uk-margin-small">{data.title}</h1>
+				<h1 class="uk-margin-small">{work.title}</h1>
                 <div><span class="author">by author</span></div>
 				<div><span class="uk-badge uk-background-secondary">complex</span></div>
 				<span uk-icon="icon: star"></span><span uk-icon="icon: star"></span><span uk-icon="icon: star"></span>
