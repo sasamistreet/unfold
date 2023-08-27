@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String @id @default(uuid())
+  name         String @unique
+  email        String @unique
+  lang_default String @default("ja")
+  Work         Work[]
+}
+
+model Work {
+  id             Int      @id @default(autoincrement())
+  title          String   @unique
+  author         User     @relation(fields: [authorId], references: [id])
+  authorId       String // relation scalar field (used in the `@relation` attribute above)
+  date_published DateTime
+  date_modified  DateTime
+  Step           Step[]
+}
+
+model Step {
+  id                 String     @id @db.Uuid
+  work               Work       @relation(fields: [workId], references: [id])
+  workId             Int
+  order              Int
+  figure_default     String     @default("vector")
+  figure_vector      String?
+  figure_photo       String?
+  figure_video       String?
+  caption            String?
+  scale_default      Decimal    @default(100)
+  position_default   Decimal[]  @default([0, 0])
+  transition         Transition @default(FORWARD)
+  transition_caption String?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+}
+
+enum Transition {
+  FORWARD
+  REVERSE
+  ROTATE
+  EXPAND
+  SHRINK
+  COMPLETE
+}

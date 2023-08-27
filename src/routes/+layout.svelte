@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
+	import { invalidate } from '$app/navigation'
+	import { onMount } from 'svelte';
 	import Header from './Header.svelte';
-	import { onMount } from 'svelte'
-    onMount(() => {
-        import('../../node_modules/uikit/dist/css/uikit.unfold.min.css');
-    })
+    import '../../node_modules/uikit/dist/css/uikit.min.css';
+
 </script>
 <div class="app">
     <Header />
