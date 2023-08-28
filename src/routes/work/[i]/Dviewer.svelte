@@ -2,34 +2,37 @@
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
-	import { current, steps } from '$lib/stores.js';
+	//import { current, steps } from '$lib/stores.js';
 	
 	import UIkit from 'uikit';
 	UIkit.tooltip();
 	import Icons from 'uikit/dist/js/uikit-icons';
 	UIkit.use(Icons);
 
-	//$: steps = [$current-2, $current-1, $current, $current+1, $current+2];
+	let current: number = 1;
+	//$: steps = [current-2, current-1, current, current+1, current+2];
 	//配列で$のリアクティビティは使えない
-	//let steps = [$current-2, $current-1, $current, $current+1, $current+2];
+	export let steps:[];
 	let totalstep = 24;
 	let hoverstep = 1;
 	let left = 0;
 	let display = "none";
 
 	function forward(){
-		if ($current < totalstep){
-			current.update(n => n + 1);
+		if (current < totalstep){
+			//current.update(n => n + 1);
+			current++;
 		}
-		//steps.shift();
-		//steps.push($current + 2);
+		steps.shift();
+		steps.push(current + 2);
 	}
 	function back(){
-		if ($current > 1){
-			current.update(n => n - 1);
+		if (current > 1){
+			//current.update(n => n - 1);
+			current--;
 		}
-		//steps.pop();
-		//steps.unshift($current - 2);
+		steps.pop();
+		steps.unshift(current - 2);
 	}
 
 	function showHoverStep(e: MouseEvent) {
@@ -46,9 +49,9 @@
 <div class="viewer">
 	
 	<ul class="step-list">
-		{#each $steps as step, i (step)}
-		<li id="{step}" class="step" class:current="{$current == step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
-			{#if $current == step}
+		{#each steps as step, i (step)}
+		<li id="{step}" class="step" class:current="{current == step.step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
+			{#if current == step.step}
 			<div class="steptools uk-flex uk-flex-between uk-width-1-1 uk-padding-small">
 				<div class="uk-align-left">
 					<span data-uk-icon="expand"></span>
@@ -61,11 +64,11 @@
 				</div>
 			</div>
 			{/if}
-			<div>{step}</div>
-			{#if $current == step}
+			<div>{step.figure_svg_path}</div>
+			{#if current == step.step}
 			<div class="stepinfo">
 				<div class="number">
-					<span class="current-number uk-width-1-6">{$current}</span>/{totalstep}
+					<span class="current-number uk-width-1-6">{current}</span>/{totalstep}
 				</div>
 				<p class="description uk-width-expand">
 					this is description.
@@ -91,7 +94,7 @@
             <span class="uk-text-left" data-uk-icon="thumbnails"></span>
         </div>
 		<div class="toolbar-tooltip" style="left: {left}px; display: {display};" >{hoverstep}</div>
-        <input class="steps-slider uk-range uk-width-expand" type="range" bind:value={$current} on:mousemove={showHoverStep} on:mouseout={hideHoverStep} on:blur={hideHoverStep} min=1 max={totalstep} aria-label="Range">
+        <input class="steps-slider uk-range uk-width-expand" type="range" bind:value={current} on:mousemove={showHoverStep} on:mouseout={hideHoverStep} on:blur={hideHoverStep} min=1 max={totalstep} aria-label="Range">
         <div style="display:inline-flex;">
             <button on:click={back} ><span uk-icon="chevron-left"></span></button>
 			<button on:click={forward} ><span uk-icon="chevron-right"></span></button>

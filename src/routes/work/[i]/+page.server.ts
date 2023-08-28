@@ -6,7 +6,13 @@ async function getWork(workId){
 }
 
 async function getSteps(workId){
-    const{ data, error } = await supabase.from("Step").select('id', workId);
+    const{ data, error } = await supabase.from("Step").select().eq('workId', workId).order('step', { ascending: true });
+    return data;
+}
+
+async function getCurrent(workId, steps){
+    const{ data, error } = await supabase.from("Step").select().eq('workId', workId).filter('step', 'in', steps).order('step', { ascending: true });
+    console.log(data);
     return data;
 }
 
@@ -26,9 +32,10 @@ async function getFeatured(path:string){
 export async function load({ locals, params }) {
     try {
         const work = getWork(params.i);
-        const steps = getSteps(params.i);
+        //const steps = getSteps(params.i);
+        const steps = getCurrent(params.i, "(1,2,3,4,5)");
         //const path = work.featured_image;
-        const featured = getFeatured("Apple_logo_black.svg")
+        const featured = getFeatured("work/Apple_logo_black.svg")
         return {work, steps, featured};
     } catch (error) {
 

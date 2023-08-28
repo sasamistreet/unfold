@@ -1,17 +1,20 @@
 <script>
 	import Dviewer from './Dviewer.svelte';
+	//import { current, steps } from '$lib/stores.js';
 	let name = 'Title';
 	let totalstep = 123;
 	import UIkit from 'uikit';
 	UIkit.grid();
 	UIkit.accordion();
-
+	export let currentSteps = [1,2,3,4,5];
+	//これをサーバーに投げることはできるか？
 	export let data;
 	$: ({ work, steps, featured } = data);
-
 </script>
-<Dviewer></Dviewer>
-
+<Dviewer steps={steps}></Dviewer>
+{#each steps as step }
+	<div>{step.figure_svg_path}</div>
+{/each}
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
