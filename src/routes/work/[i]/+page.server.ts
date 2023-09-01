@@ -1,18 +1,19 @@
 import { supabase } from "$lib/server/supabaseClient";
+import type { PageServerLoad } from './$types';
+import { current, stepNums } from '$lib/stores';
 
 async function getWork(workId){
     const{ data, error } = await supabase.from("Work").select().eq('id', workId).single();
     return data;
 }
 
-async function getSteps(workId){
-    const{ data, error } = await supabase.from("Step").select().eq('workId', workId).order('step', { ascending: true });
+async function getStep(workId, s){
+    const{ data, error } = await supabase.from("Step").select().match({ workId: workId, step: s });
     return data;
 }
 
 async function getCurrent(workId, steps){
-    const{ data, error } = await supabase.from("Step").select().eq('workId', workId).filter('step', 'in', steps).order('step', { ascending: true });
-    console.log(data);
+    const{ data, error } = await supabase.from("Step").select().eq('workId', workId).in('step', [1,2,3]).order('step', { ascending: true });
     return data;
 }
 
@@ -29,15 +30,18 @@ async function getFeatured(path:string){
 }
 
 
-export async function load({ locals, params }) {
+
+export const load = (async ({ locals, params }) => {
     try {
         const work = getWork(params.i);
-        //const steps = getSteps(params.i);
-        const steps = getCurrent(params.i, "(1,2,3,4,5)");
-        //const path = work.featured_image;
+        //const stepData = getSteps(params.i);
+        //let steps = getContext('steps');
+        const step = getStep(params.i, 5);
+        const stepData = getCurrent(params.i, [1,2,3]);
+        console.log(stepData);
         const featured = getFeatured("work/Apple_logo_black.svg")
-        return {work, steps, featured};
+        return {work, stepData, step, featured};
     } catch (error) {
 
     }
-}
+})  satisfies PageServerLoad;

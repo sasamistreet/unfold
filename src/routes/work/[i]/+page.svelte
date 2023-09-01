@@ -1,20 +1,47 @@
-<script>
+<script lang="ts">
+	import { onMount, setContext } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
 	import Dviewer from './Dviewer.svelte';
-	//import { current, steps } from '$lib/stores.js';
+	import {stepNums, steps} from '$lib/stores';
+	import { afterNavigate } from '$app/navigation';
 	let name = 'Title';
 	let totalstep = 123;
 	import UIkit from 'uikit';
+	import { setResponse } from '@sveltejs/kit/node';
+	import type { PageData } from './$types';
 	UIkit.grid();
 	UIkit.accordion();
-	export let currentSteps = [1,2,3,4,5];
-	//これをサーバーに投げることはできるか？
-	export let data;
-	$: ({ work, steps, featured } = data);
+
+	export let data: PageData;
+	$: ({ work, stepData, step, featured } = data);
+	//$: steps = stepData;
+
+	//let steps = writable([1,2,3]);
+	//$: steps.set(data.stepData);
+	//console.log(data.stepData);
+	setContext('steps', steps);
+
+	//let steps = [];
+	onMount(() => {
+		//loadStep(1);
+	});
+	let newStep = {};
+	afterNavigate(() => {
+		newStep = loadStep(1);
+	});
+	async function loadStep(s) {
+      return await fetch(`/api/steps?step=${s}`).then((res) => res.json());
+    }
+
+
+		
 </script>
-<Dviewer steps={steps}></Dviewer>
-{#each steps as step }
-	<div>{step.figure_svg_path}</div>
-{/each}
+
+<Dviewer></Dviewer>
+<button on:click={loadStep(5)}></button>
+
+<div>{step.figure_svg_path}{newStep.figure_svg_path}</div>
+
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
