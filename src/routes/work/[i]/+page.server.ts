@@ -7,8 +7,14 @@ async function getWork(workId){
     return data;
 }
 
-async function getStep(workId, s){
-    const{ data, error } = await supabase.from("Step").select().match({ workId: workId, step: s });
+async function getSingleStep(workId, s){
+    const{ data, error } = await supabase.from("Step").select().match({ workId: workId, step: 2 }).single();
+    return data;
+}
+
+async function getAllSteps(workId){
+    const{ data, error } = await supabase.from("Step").select().eq('workId', workId).order('step', { ascending: true });
+    //console.log(data);
     return data;
 }
 
@@ -30,17 +36,16 @@ async function getFeatured(path:string){
 }
 
 
-
 export const load = (async ({ locals, params }) => {
     try {
         const work = getWork(params.i);
         //const stepData = getSteps(params.i);
         //let steps = getContext('steps');
-        const step = getStep(params.i, 5);
-        const stepData = getCurrent(params.i, [1,2,3]);
-        console.log(stepData);
+        //const step = getSingleStep(params.i, 5);
+        //const stepData = getCurrent(params.i, [1,2,3]);
+        const allSteps = getAllSteps(params.i);
         const featured = getFeatured("work/Apple_logo_black.svg")
-        return {work, stepData, step, featured};
+        return {work, allSteps, featured};
     } catch (error) {
 
     }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	//import { onDestroy, setContext } from 'svelte';
-	import { getContext } from 'svelte';
+	import { onMount, afterUpdate, getContext, tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
@@ -9,15 +9,29 @@
 	import UIkit from 'uikit';
 	UIkit.tooltip();
 	import Icons from 'uikit/dist/js/uikit-icons';
+	import Step from './Step.svelte';
 	UIkit.use(Icons);
+	
+	export let work:number = 0;
 
-	//$: stepNums = [$current-2, $current-1, $current, $current+1, $current+2];
-	//配列で$のリアクティビティは使えない
 	let totalstep = 24;
 	let hoverstep = 1;
 	let left = 0;
 	let display = "none";
+	let stepDOM;
+	const allSteps = getContext('allSteps');
+	let fiveSteps = getContext('fiveSteps');
+	let items = new Set();
+	let scheduled = false;
+	let list;
+	let lists = [1,2,3,4,5];
+	
+	let photos = {};
 
+	onMount(async() => {
+		const res = fetch(`/api/steps?work=${work}&step=2`);
+		photos = await res.json();
+	});
 
 	function forward(){
 		if ($current < totalstep){
@@ -44,24 +58,13 @@
 	function hideHoverStep(){
 		display = "none";
 	}
-	function test(){
-		$stepNums = [...$stepNums, $stepNums.length + 1];
-	}
-
-	const stepsContext = getContext('steps');
-	//console.log(stepsContext);
 </script>
-<div>
-{#each $steps as $s }
-	<div>{$s}</div>
-{/each}
-{stepsContext}
-</div>
-<button on:click={test}></button>
+<div>{photos}</div>
+<Step step={1}></Step>
 <div class="viewer">
-	<ul class="step-list">
+	<ul bind:this={stepDOM} class="step-list">
 		{#each $stepNums as $step, i ($step)}
-		<li id="{$step}" class="step" class:current="{$current == $step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
+		<li id="{$step.toString()}" class="step" class:current="{$current == $step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
 			{#if $current == $step}
 			<div class="steptools uk-flex uk-flex-between uk-width-1-1 uk-padding-small">
 				<div class="uk-align-left">
@@ -75,7 +78,8 @@
 				</div>
 			</div>
 			{/if}
-			<div>{$step}</div>
+			<div></div>
+			<canvas bind:this={list}></canvas>
 			{#if $current == $step}
 			<div class="stepinfo">
 				<div class="number">

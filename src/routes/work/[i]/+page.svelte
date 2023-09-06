@@ -7,41 +7,20 @@
 	let name = 'Title';
 	let totalstep = 123;
 	import UIkit from 'uikit';
-	import { setResponse } from '@sveltejs/kit/node';
 	import type { PageData } from './$types';
 	UIkit.grid();
 	UIkit.accordion();
 
 	export let data: PageData;
-	$: ({ work, stepData, step, featured } = data);
-	//$: steps = stepData;
+	$: ({ work, allSteps, featured } = data);
+	const allStepData = writable();
+	$: allStepData.set(allSteps);
+	setContext('allSteps', allStepData);
+	let fivesteps = writable([1,2,3,4,5]);
+	setContext('fiveSteps', fivesteps);
 
-	//let steps = writable([1,2,3]);
-	//$: steps.set(data.stepData);
-	//console.log(data.stepData);
-	setContext('steps', steps);
-
-	//let steps = [];
-	onMount(() => {
-		//loadStep(1);
-	});
-	let newStep = {};
-	afterNavigate(() => {
-		newStep = loadStep(1);
-	});
-	async function loadStep(s) {
-      return await fetch(`/api/steps?step=${s}`).then((res) => res.json());
-    }
-
-
-		
 </script>
-
-<Dviewer></Dviewer>
-<button on:click={loadStep(5)}></button>
-
-<div>{step.figure_svg_path}{newStep.figure_svg_path}</div>
-
+<Dviewer work={work.id}></Dviewer>
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
