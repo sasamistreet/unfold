@@ -1,22 +1,20 @@
 <script>
-    import { onMount } from 'svelte';
-    import { json } from '@sveltejs/kit';
+    import { onMount, getContext, tick } from 'svelte';
     import { current, totalstep } from '$lib/stores';
     import UIkit from 'uikit';
 	UIkit.tooltip();
 	import Icons from 'uikit/dist/js/uikit-icons';
 	UIkit.use(Icons);
     export let step = 1;
-
-    //let canvas;
+    const work = getContext('work');
     let stepData = {};
+    let rootUrl = ""; 
 
     onMount(async() => {
-		//const ctx = canvas.getContext('2d');
-        const res = fetch(`/api/steps?work=1&step=${step}`);
-		stepData = await res.json();
-        console.log(stepData);
-    });
+		stepData = await fetch(`/api/steps?work=${work}&step=${step}`).then( res => res.json() );
+        //await tick();
+        rootUrl = await fetch(`/api/storage?path=${stepData.figure_svg_path}`).then( res => res.json() );
+	});
 </script>
     {#if $current == stepData.step}
     <div class="steptools uk-flex uk-flex-between uk-width-1-1 uk-padding-small">
@@ -31,7 +29,8 @@
         </div>
     </div>
     {/if}
-    <div>{stepData}</div>
+    <img src ="{rootUrl.publicUrl}" alt="My Happy SVG"  width="50" height="50"/>
+    
     {#if $current == stepData.step}
     <div class="stepinfo">
         <div class="number">
@@ -47,7 +46,7 @@
     {/if}
 
 <style>
-     .steptools{
+    .steptools{
 		position:absolute;
 		left:0;
 		top:0;

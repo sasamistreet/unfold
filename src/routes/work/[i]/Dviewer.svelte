@@ -1,41 +1,23 @@
 <script lang="ts">
 	//import { onDestroy, setContext } from 'svelte';
-	import { onMount, afterUpdate, getContext, tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
-	import { current, stepNums, steps } from '$lib/stores';
+	import { current, stepNums } from '$lib/stores';
+	import Step from './Step.svelte';
 	
 	import UIkit from 'uikit';
 	UIkit.tooltip();
 	import Icons from 'uikit/dist/js/uikit-icons';
-	import Step from './Step.svelte';
 	UIkit.use(Icons);
-	
-	export let work:number = 0;
 
 	let totalstep = 24;
 	let hoverstep = 1;
 	let left = 0;
 	let display = "none";
-	let stepDOM;
-	const allSteps = getContext('allSteps');
-	let fiveSteps = getContext('fiveSteps');
-	let items = new Set();
-	let scheduled = false;
-	let list;
-	let lists = [1,2,3,4,5];
-	
-	let photos = {};
-
-	onMount(async() => {
-		const res = fetch(`/api/steps?work=${work}&step=2`);
-		photos = await res.json();
-	});
 
 	function forward(){
 		if ($current < totalstep){
-			//current.update(n => n + 1);
 			$current++;
 		}
 		stepNums.shift();
@@ -43,7 +25,6 @@
 	}
 	function back(){
 		if ($current > 1){
-			//current.update(n => n - 1);
 			$current--;
 		}
 		stepNums.pop();
@@ -59,45 +40,16 @@
 		display = "none";
 	}
 </script>
-<div>{photos}</div>
-<Step step={1}></Step>
 <div class="viewer">
-	<ul bind:this={stepDOM} class="step-list">
+	<ul class="step-list">
 		{#each $stepNums as $step, i ($step)}
 		<li id="{$step.toString()}" class="step" class:current="{$current == $step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
-			{#if $current == $step}
-			<div class="steptools uk-flex uk-flex-between uk-width-1-1 uk-padding-small">
-				<div class="uk-align-left">
-					<span data-uk-icon="expand"></span>
-					<span data-uk-icon="shrink"></span>
-					<span data-uk-icon="refresh"></span>
-				</div>
-				<div class="uk-align-right">
-					<span data-uk-icon="image"></span>
-					<span data-uk-icon="play-circle"></span>
-				</div>
-			</div>
-			{/if}
-			<div></div>
-			<canvas bind:this={list}></canvas>
-			{#if $current == $step}
-			<div class="stepinfo">
-				<div class="number">
-					<span class="current-number uk-width-1-6">{$current}</span>/{totalstep}
-				</div>
-				<p class="description uk-width-expand">
-					this is description.
-				</p>
-				<div class="buttons uk-width-1-6">
-					<span class="uk-margin-small-right" data-uk-icon="comments"></span>6
-				</div>
-			</div>
-			{/if}
+			<Step step={$step} />
 		</li>
 		{/each}
 	</ul>
-		<button on:click={back} class="viewer-nav viewer-nav-back"><span class="uk-text-large uk-light" uk-icon="icon: chevron-left; ratio: 2"></span></button>
-		<button on:click={forward} class="viewer-nav viewer-nav-forward"><span class="uk-text-large uk-light" uk-icon="icon: chevron-right; ratio: 2"></span></button>
+	<button on:click={back} class="viewer-nav viewer-nav-back"><span class="uk-text-large uk-light" uk-icon="icon: chevron-left; ratio: 2"></span></button>
+	<button on:click={forward} class="viewer-nav viewer-nav-forward"><span class="uk-text-large uk-light" uk-icon="icon: chevron-right; ratio: 2"></span></button>
 </div>
 
 <div class="viewer-toolbar">
@@ -183,7 +135,7 @@
 
 	}
 	
-	.steptools{
+	/*.steptools{
 		position:absolute;
 		left:0;
 		top:0;
@@ -209,7 +161,7 @@
 	}
 	.description{
 		font-size:0.8rem;
-	}
+	}*/
 	
 	.viewer-toolbar{
 		background:#222;

@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
 	import Dviewer from './Dviewer.svelte';
-	import {stepNums, steps} from '$lib/stores';
-	import { afterNavigate } from '$app/navigation';
-	let name = 'Title';
+
+	import {page} from '$app/stores'
 	let totalstep = 123;
 	import UIkit from 'uikit';
 	import type { PageData } from './$types';
@@ -12,15 +10,13 @@
 	UIkit.accordion();
 
 	export let data: PageData;
-	$: ({ work, allSteps, featured } = data);
-	const allStepData = writable();
-	$: allStepData.set(allSteps);
-	setContext('allSteps', allStepData);
-	let fivesteps = writable([1,2,3,4,5]);
-	setContext('fiveSteps', fivesteps);
+	$: ({ featured } = data);
+
+	const work = $page.params.i;
+	setContext('work', work);
 
 </script>
-<Dviewer work={work.id}></Dviewer>
+<Dviewer></Dviewer>
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
