@@ -7,6 +7,11 @@ async function getSingleStep(workId: number, step: number){
 }
 
 export async function GET({ url }) {
-    const steps = await getSingleStep(url.searchParams.get('work'), url.searchParams.get('step'));
-    return json(steps);
+    try {
+        const stepJson = await getSingleStep(url.searchParams.get('work'), url.searchParams.get('step'));
+        return json(stepJson);
+    } catch (error) {
+        const stepJson = await getSingleStep(1, 1);
+        return json(stepJson);
+    }
 }

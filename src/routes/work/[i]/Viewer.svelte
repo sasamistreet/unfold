@@ -3,7 +3,7 @@
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
-	import { current, stepNums } from '$lib/stores';
+	import { current, currentSteps, moving } from '$lib/stores';
 	import Step from './Step.svelte';
 	
 	import UIkit from 'uikit';
@@ -11,7 +11,7 @@
 	import Icons from 'uikit/dist/js/uikit-icons';
 	UIkit.use(Icons);
 
-	let totalstep = 24;
+	let totalstep = 7;
 	let hoverstep = 1;
 	let left = 0;
 	let display = "none";
@@ -20,15 +20,11 @@
 		if ($current < totalstep){
 			$current++;
 		}
-		stepNums.shift();
-		stepNums.push($current + 2);
 	}
 	function back(){
 		if ($current > 1){
 			$current--;
 		}
-		stepNums.pop();
-		stepNums.unshift($current - 2);
 	}
 
 	function showHoverStep(e: MouseEvent) {
@@ -39,10 +35,14 @@
 	function hideHoverStep(){
 		display = "none";
 	}
+
+	
+	
 </script>
+<svelte:window/>
 <div class="viewer">
 	<ul class="step-list">
-		{#each $stepNums as $step, i ($step)}
+		{#each $currentSteps as $step, i ($step)}
 		<li id="{$step.toString()}" class="step" class:current="{$current == $step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
 			<Step step={$step} />
 		</li>
@@ -123,6 +123,8 @@
 		justify-content: center;
 		position:relative;
 		background:#fafafa;
+		height:480px;
+		overflow: hidden;
 	}
 	
 	.current{

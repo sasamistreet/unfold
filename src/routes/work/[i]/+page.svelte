@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onMount, setContext } from 'svelte';
-	import Dviewer from './Dviewer.svelte';
+	import { setContext } from 'svelte';
+	import Viewer from './Viewer.svelte';
 
 	import {page} from '$app/stores'
-	let totalstep = 123;
+	let totalstep = 7;
 	import UIkit from 'uikit';
 	import type { PageData } from './$types';
 	UIkit.grid();
@@ -13,10 +13,10 @@
 	$: ({ featured } = data);
 
 	const work = $page.params.i;
-	setContext('work', work);
+	setContext('info', { work, totalstep });
 
 </script>
-<Dviewer></Dviewer>
+<Viewer></Viewer>
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
