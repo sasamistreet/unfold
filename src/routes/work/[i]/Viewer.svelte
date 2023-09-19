@@ -1,35 +1,30 @@
 <script lang="ts">
+	//import { onDestroy, setContext } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
-	import { current, steps } from '$lib/stores.js';
+	import { current, currentSteps, moving } from '$lib/stores';
+	import Step from './Step.svelte';
 	
 	import UIkit from 'uikit';
 	UIkit.tooltip();
 	import Icons from 'uikit/dist/js/uikit-icons';
 	UIkit.use(Icons);
 
-	//$: steps = [$current-2, $current-1, $current, $current+1, $current+2];
-	//配列で$のリアクティビティは使えない
-	//let steps = [$current-2, $current-1, $current, $current+1, $current+2];
-	let totalstep = 24;
+	let totalstep = 7;
 	let hoverstep = 1;
 	let left = 0;
 	let display = "none";
 
 	function forward(){
 		if ($current < totalstep){
-			current.update(n => n + 1);
+			$current++;
 		}
-		//steps.shift();
-		//steps.push($current + 2);
 	}
 	function back(){
 		if ($current > 1){
-			current.update(n => n - 1);
+			$current--;
 		}
-		//steps.pop();
-		//steps.unshift($current - 2);
 	}
 
 	function showHoverStep(e: MouseEvent) {
@@ -40,46 +35,21 @@
 	function hideHoverStep(){
 		display = "none";
 	}
+
+	
 	
 </script>
-
+<svelte:window/>
 <div class="viewer">
-	
 	<ul class="step-list">
-		{#each $steps as step, i (step)}
-		<li id="{step}" class="step" class:current="{$current == step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
-			{#if $current == step}
-			<div class="steptools uk-flex uk-flex-between uk-width-1-1 uk-padding-small">
-				<div class="uk-align-left">
-					<span data-uk-icon="expand"></span>
-					<span data-uk-icon="shrink"></span>
-					<span data-uk-icon="refresh"></span>
-				</div>
-				<div class="uk-align-right">
-					<span data-uk-icon="image"></span>
-					<span data-uk-icon="play-circle"></span>
-				</div>
-			</div>
-			{/if}
-			<div>{step}</div>
-			{#if $current == step}
-			<div class="stepinfo">
-				<div class="number">
-					<span class="current-number uk-width-1-6">{$current}</span>/{totalstep}
-				</div>
-				<p class="description uk-width-expand">
-					this is description.
-				</p>
-				<div class="buttons uk-width-1-6">
-					<span class="uk-margin-small-right" data-uk-icon="comments"></span>6
-				</div>
-			</div>
-			{/if}
+		{#each $currentSteps as $step, i ($step)}
+		<li id="{$step.toString()}" class="step" class:current="{$current == $step}" animate:flip="{{ duration: 300, easing: quintOut }}" out:slide="{{ duration: 300, axis: 'x' }}" in:slide="{{ duration: 300, axis: 'x' }}" >
+			<Step step={$step} />
 		</li>
 		{/each}
 	</ul>
-		<button on:click={back} class="viewer-nav viewer-nav-back"><span class="uk-text-large uk-light" uk-icon="icon: chevron-left; ratio: 2"></span></button>
-		<button on:click={forward} class="viewer-nav viewer-nav-forward"><span class="uk-text-large uk-light" uk-icon="icon: chevron-right; ratio: 2"></span></button>
+	<button on:click={back} class="viewer-nav viewer-nav-back"><span class="uk-text-large uk-light" uk-icon="icon: chevron-left; ratio: 2"></span></button>
+	<button on:click={forward} class="viewer-nav viewer-nav-forward"><span class="uk-text-large uk-light" uk-icon="icon: chevron-right; ratio: 2"></span></button>
 </div>
 
 <div class="viewer-toolbar">
@@ -153,6 +123,8 @@
 		justify-content: center;
 		position:relative;
 		background:#fafafa;
+		height:480px;
+		overflow: hidden;
 	}
 	
 	.current{
@@ -165,7 +137,7 @@
 
 	}
 	
-	.steptools{
+	/*.steptools{
 		position:absolute;
 		left:0;
 		top:0;
@@ -191,7 +163,7 @@
 	}
 	.description{
 		font-size:0.8rem;
-	}
+	}*/
 	
 	.viewer-toolbar{
 		background:#222;

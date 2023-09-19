@@ -1,17 +1,22 @@
-<script>
-	import Dviewer from './Dviewer.svelte';
-	let name = 'Title';
-	let totalstep = 123;
+<script lang="ts">
+	import { setContext } from 'svelte';
+	import Viewer from './Viewer.svelte';
+
+	import {page} from '$app/stores'
+	let totalstep = 7;
 	import UIkit from 'uikit';
+	import type { PageData } from './$types';
 	UIkit.grid();
 	UIkit.accordion();
 
-	export let data;
-	$: ({ work, steps, featured } = data);
+	export let data: PageData;
+	$: ({ featured } = data);
+
+	const work = $page.params.i;
+	setContext('info', { work, totalstep });
 
 </script>
-<Dviewer></Dviewer>
-
+<Viewer></Viewer>
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
         <div class="uk-child-width-expand@s modelgrid" uk-grid>
