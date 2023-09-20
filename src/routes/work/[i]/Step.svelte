@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount, onDestroy, getContext } from 'svelte';
     import { current } from '$lib/stores';
     import UIkit from 'uikit';
@@ -10,46 +10,43 @@
     const totalstep = getContext('info').totalstep;
     let stepData = {};
     let rootUrl = ""; 
-    let width = 100;
-
+    let scale:number = 1;
+    $: width = 100 * scale;
+    let item: HTMLImageElement;
     onMount(async() => {
         if ( step > 0 && step <= totalstep ){
             stepData = await fetch(`/api/steps?work=${work}&step=${step}`).then( res => res.json() );
         } else {
+            //ダミー
             stepData = await fetch(`/api/steps?work=1&step=1`).then( res => res.json() );
         }
+        //URLを取得
         rootUrl = await fetch(`/api/storage?path=${stepData.figure_svg_path}`).then( res => res.json() );
+        item.ondragstart = function() {
+            //これをしないとブラウザの機能と競合してドラッグできない
+            return false;
+        };
 	});
 
     onDestroy(() => {
 	});
 
     function expand() {
-        width = 300;
+        scale = scale + 0.5;
     }
 
     function shrink () {
-
+        scale = scale - 0.5;
     }
 
     function reset () {
-        width = 200;
-    }
-    
-    function handleDrag(e){
-
-    }
-
-    function dragStart(){
-        console.log('drag start');
+        scale = 1;
     }
 
     let left = 50;
 	let top = 50
 
-    let moving = false;
-    let item;
-	
+	let moving = false;
 	function onMouseDown() {
         moving = true;
         console.log(moving);
@@ -58,7 +55,7 @@
     function onMouseMove(e) {
         if (moving) {
             left += e.movementX;
-            top += e.movementY;
+			top += e.movementY;
         }
 	}
     
@@ -66,13 +63,12 @@
         moving = false;
         console.log(moving);
 	}
-	
-	
+    
 </script>
-<svelte:window on:mousemove={onMouseMove}  on:mouseup={onMouseUp} ></svelte:window>
+<svelte:window on:mousemove={onMouseMove}  on:mouseup={onMouseUp}/>
     <div class="viewBox">
-        <img bind:this={item} class:moving on:mousedown={onMouseDown} src="{rootUrl.publicUrl}" class="media" height="{width}" width="{width}" alt=""/>
-        <!--<object draggable="true"  on:mousedown={onMouseDown} style="left: {left}px; top: {top}px;"  role="figure" aria-label="" title="" type="image/svg+xml" data="{rootUrl.publicUrl}" class="media" height="{width}" width="{width}"></object>-->
+        <img bind:this={item} role="presentation" on:mousedown={onMouseDown} style:left={left}px style:top={top}px src="{rootUrl.publicUrl}" height="{width}" width="{width}" class="media" alt=""/>
+        <!--<object on:mousedown={onMouseDown} style="left: {left}px; top: {top}px;"  role="figure" aria-label="" title="" type="image/svg+xml" data="{rootUrl.publicUrl}" class="media" height="{width}" width="{width}"></object>-->
     </div>
     {#if $current == stepData.step}
     <div class="steptools uk-flex uk-flex-between uk-width-1-1 uk-padding-small">
@@ -101,17 +97,18 @@
     
 <style>
     .viewBox{
-        height:100%;
-        width:100%;
+        height: 100%;
+        width: 100%;
         margin:0;
-        overflow: hidden;
         position:relative;
     }
     .media{
-
         position: absolute;
+        user-select: none;
         cursor: move;
         user-select: none;
+        transform-origin: center;
+        transition:width 0.3s cubic-bezier(0.19, 1, 0.22, 1); /* easeOutExpo */
     }
     .steptools{
 		position:absolute;
