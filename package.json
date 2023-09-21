@@ -26,12 +26,8 @@
 		"eslint-plugin-svelte": "^2.30.0",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.10.1",
-<<<<<<< HEAD
-		"svelte": "^4.2.0",
-=======
 		"prisma": "^5.1.1",
 		"svelte": "^4.0.5",
->>>>>>> 31bc9f228fe6b5c564805e0ce11181e2a7d05bda
 		"svelte-check": "^3.4.3",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
@@ -40,15 +36,11 @@
 	},
 	"type": "module",
 	"dependencies": {
-<<<<<<< HEAD
-		"uikit": "^3.16.24"
-=======
 		"@prisma/client": "5.1.1",
 		"@supabase/auth-helpers-sveltekit": "^0.10.2",
 		"@supabase/auth-ui-shared": "^0.1.6",
 		"@supabase/auth-ui-svelte": "^0.2.2",
-		"@supabase/supabase-js": "^2.33.1",
+		"@supabase/supabase-js": "^2.33.2",
 		"uikit": "^3.16.24-dev.7e7f6a13d"
->>>>>>> 31bc9f228fe6b5c564805e0ce11181e2a7d05bda
 	}
 }
