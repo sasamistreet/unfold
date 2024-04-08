@@ -15,7 +15,10 @@
 	const work = $page.params.i;
 	setContext('info', { work, totalstep });
 
+	
+
 </script>
+
 <Viewer></Viewer>
 <div class="model-information uk-padding-large">
     <div class="uk-container uk-container-xsmall">
