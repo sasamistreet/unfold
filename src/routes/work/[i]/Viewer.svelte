@@ -108,7 +108,7 @@
 		display:flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
-		position:relative;
+		position: relative;
 		margin:0;
 		justify-content: center;
 		padding:0;

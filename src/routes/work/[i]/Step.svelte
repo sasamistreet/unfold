@@ -11,7 +11,7 @@
     let stepData = {};
     let rootUrl = ""; 
     let scale:number = 1;
-    $: width = 100 * scale;
+    $: width = 480 * scale;
     let item: HTMLImageElement;
     onMount(async() => {
         if ( step > 0 && step <= totalstep ){
@@ -43,8 +43,8 @@
         scale = 1;
     }
 
-    let left = 50;
-	let top = 50
+    let left = 0;
+	let top = 0
 
 	let moving = false;
 	function onMouseDown() {
@@ -66,8 +66,8 @@
     
 </script>
 <svelte:window on:mousemove={onMouseMove}  on:mouseup={onMouseUp}/>
-    <div class="viewBox">
-        <img bind:this={item} role="presentation" on:mousedown={onMouseDown} style:left={left}px style:top={top}px src="{rootUrl.publicUrl}" height="{width}" width="{width}" class="media" alt=""/>
+    <div class="viewBox" style:left={left}px style:top={top}px>
+        <img bind:this={item} role="presentation" on:mousedown={onMouseDown} src="{rootUrl.publicUrl}" height="{width}" width="{width}" class="media" alt=""/>
         <!--<object on:mousedown={onMouseDown} style="left: {left}px; top: {top}px;"  role="figure" aria-label="" title="" type="image/svg+xml" data="{rootUrl.publicUrl}" class="media" height="{width}" width="{width}"></object>-->
     </div>
     {#if $current == stepData.step}
@@ -97,17 +97,18 @@
     
 <style>
     .viewBox{
-        height: 100%;
+        height: 480px;
         width: 100%;
         margin:0;
-        position:relative;
+        position: absolute;
+        display: grid;
+        place-items: center;
     }
     .media{
-        position: absolute;
+        transform-origin: 50% 50%;
         user-select: none;
         cursor: move;
         user-select: none;
-        transform-origin: center;
         transition:width 0.3s cubic-bezier(0.19, 1, 0.22, 1); /* easeOutExpo */
     }
     .steptools{
